@@ -17,7 +17,7 @@ function __promptline_last_exit_code {
 }
 function __promptline_ps1 {
   local slice_prefix slice_empty_prefix slice_joiner slice_suffix is_prompt_empty=1
-
+  # echo "" >> ~/.debugPS.txt
   # open section
   echo "" # blank line between last output and bash prompt
 
@@ -48,13 +48,14 @@ function __promptline_ps1 {
  
   local pgs=$(__promptline_git_status)
   local git_clean=1
-  echo $pgs > ~/.debugPS.txt
-  if [[ "$pgs" != *"✔"* ]] && [[ "$pgs" != "" ]]; then
+  # echo $pgs > ~/.debugPS.txt
+  if [[ "$pgs" != "✔" ]] && [[ "$pgs" != "" ]]; then
   #if [[ $global_is_clean -eq 0 ]]; then
     # not clean
     git_clean=0
-  slice_prefix="${warn_bg}${sep}${warn_fg}${warn_bg}${space}" slice_suffix="$space${warn_sep_fg}" slice_joiner="${warn_fg}${warn_bg}${alt_sep}${space}" slice_empty_prefix="${warn_fg}${warn_bg}${space}"
-elif [[ "$pgs" == *"✔"* ]]; then
+    slice_prefix="${gs_bg}${sep}${gs_fg}${gs_bg}${space}" slice_suffix="$space${gs_sep_fg}" slice_joiner="${gs_fg}${gs_bg}${alt_sep}${space}" slice_empty_prefix="${gs_fg}${gs_bg}${space}"
+#    slice_prefix="${warn_bg}${sep}${warn_fg}${warn_bg}${space}" slice_suffix="$space${warn_sep_fg}" slice_joiner="${warn_fg}${warn_bg}${alt_sep}${space}" slice_empty_prefix="${warn_fg}${warn_bg}${space}"
+elif [[ "$pgs" == "✔" ]]; then
   slice_prefix="${a_bg}${sep}${a_fg}${a_bg}${space}" slice_suffix="$space${a_sep_fg}" slice_joiner="${a_fg}${a_bg}${alt_sep}${space}" slice_empty_prefix="${a_fg}${a_bg}${space}"
   fi
 
@@ -63,7 +64,7 @@ elif [[ "$pgs" == *"✔"* ]]; then
 
   # section "warn" header
   slice_prefix="${warn_bg}${sep}${warn_fg}${warn_bg}${space}" slice_suffix="$space${warn_sep_fg}" slice_joiner="${warn_fg}${warn_bg}${alt_sep}${space}" slice_empty_prefix="${warn_fg}${warn_bg}${space}"
-  [ $is_prompt_empty -eq 1 ] || [ $git_clean -eq 0 ] && slice_prefix="$slice_empty_prefix"
+  [ $is_prompt_empty -eq 1 ] && slice_prefix="$slice_empty_prefix"
   # section "warn" slices
   __promptline_wrapper "$(__promptline_last_exit_code)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
 
@@ -145,6 +146,7 @@ function __promptline_wrapper {
 
   [[ -n "$1" ]] || return 1
   printf "%s" "${2}${1}${3}"
+  # echo "${2}${1}${3}" >> ~/.debugPS.txt
 }
 function __promptline_git_status {
   [[ $(git rev-parse --is-inside-work-tree 2>/dev/null) == true ]] || return 1
@@ -254,7 +256,7 @@ function __promptline {
   local global_is_clean=0
   local gs_fg="${wrap}38;5;13${end_wrap}"
   local gs_bg="${wrap}48;5;140${end_wrap}"
-  local gs_sep_fg="${wrap}38;5;13${end_wrap}"
+  local gs_sep_fg="${wrap}38;5;140${end_wrap}"
   if [[ -n ${ZSH_VERSION-} ]]; then
     PROMPT="$(__promptline_left_prompt)"
     RPROMPT="$(__promptline_right_prompt)"
