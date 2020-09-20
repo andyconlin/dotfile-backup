@@ -18,6 +18,9 @@ function __promptline_last_exit_code {
 function __promptline_ps1 {
   local slice_prefix slice_empty_prefix slice_joiner slice_suffix is_prompt_empty=1
 
+  # open section
+  echo "" # blank line between last output and bash prompt
+
   # section "a" header
   slice_prefix="${a_bg}${sep}${a_fg}${a_bg}${space}" slice_suffix="$space${a_sep_fg}" slice_joiner="${a_fg}${a_bg}${alt_sep}${space}" slice_empty_prefix="${a_fg}${a_bg}${space}"
   [ $is_prompt_empty -eq 1 ] && slice_prefix="$slice_empty_prefix"
@@ -39,25 +42,34 @@ function __promptline_ps1 {
   # section "y" header
   slice_prefix="${y_bg}${sep}${y_fg}${y_bg}${space}" slice_suffix="$space${y_sep_fg}" slice_joiner="${y_fg}${y_bg}${alt_sep}${space}" slice_empty_prefix="${y_fg}${y_bg}${space}"
   [ $is_prompt_empty -eq 1 ] && slice_prefix="$slice_empty_prefix"
+
   # section "y" slices
   __promptline_wrapper "$(__promptline_vcs_branch)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
-  
-  local p_g_s=$(__promptline_git_status)
-  if [[ $global_is_clean -eq 0 ]]; then
+ 
+  local pgs=$(__promptline_git_status)
+  local git_clean=1
+  echo $pgs > ~/.debugPS.txt
+  if [[ "$pgs" != *"✔"* ]] && [[ "$pgs" != "" ]]; then
+  #if [[ $global_is_clean -eq 0 ]]; then
     # not clean
+    git_clean=0
   slice_prefix="${warn_bg}${sep}${warn_fg}${warn_bg}${space}" slice_suffix="$space${warn_sep_fg}" slice_joiner="${warn_fg}${warn_bg}${alt_sep}${space}" slice_empty_prefix="${warn_fg}${warn_bg}${space}"
+elif [[ "$pgs" == *"✔"* ]]; then
+  slice_prefix="${a_bg}${sep}${a_fg}${a_bg}${space}" slice_suffix="$space${a_sep_fg}" slice_joiner="${a_fg}${a_bg}${alt_sep}${space}" slice_empty_prefix="${a_fg}${a_bg}${space}"
   fi
 
-  __promptline_wrapper "$(__promptline_git_status)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
+  #__promptline_wrapper "$(__promptline_git_status)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
+  __promptline_wrapper "$pgs" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
 
   # section "warn" header
   slice_prefix="${warn_bg}${sep}${warn_fg}${warn_bg}${space}" slice_suffix="$space${warn_sep_fg}" slice_joiner="${warn_fg}${warn_bg}${alt_sep}${space}" slice_empty_prefix="${warn_fg}${warn_bg}${space}"
-  [ $is_prompt_empty -eq 1 ] && slice_prefix="$slice_empty_prefix"
+  [ $is_prompt_empty -eq 1 ] || [ $git_clean -eq 0 ] && slice_prefix="$slice_empty_prefix"
   # section "warn" slices
   __promptline_wrapper "$(__promptline_last_exit_code)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; is_prompt_empty=0; }
 
   # close sections
-  printf "%s" "${reset_bg}${sep}$reset$space"
+  printf "%s" "${reset_bg}${sep}$reset" # no $space"
+  echo "\n↪ "
 }
 function __promptline_vcs_branch {
   local branch
@@ -148,6 +160,8 @@ function __promptline_git_status {
 
   local unmerged_count=0 modified_count=0 has_untracked_files=0 added_count=0 is_clean=""
 
+  # global_is_clean=0
+
   set -- $(git rev-list --left-right --count @{upstream}...HEAD 2>/dev/null)
   local behind_count=$1
   local ahead_count=$2
@@ -170,11 +184,12 @@ function __promptline_git_status {
     has_untracked_files=1
   fi
 
+  # echo $global_is_clean
   if [ $(( unmerged_count + modified_count + has_untracked_files + added_count )) -eq 0 ]; then
     is_clean=1
+    global_is_clean=1
   fi
-
-  global_is_clean=$is_clean
+  # echo $global_is_clean
 
   local leading_whitespace=""
   [[ $ahead_count -gt 0 ]]         && { printf "%s" "$leading_whitespace$ahead_symbol$ahead_count"; leading_whitespace=" "; }
@@ -236,6 +251,10 @@ function __promptline {
   local y_fg="${wrap}38;5;15${end_wrap}"
   local y_bg="${wrap}48;5;13${end_wrap}"
   local y_sep_fg="${wrap}38;5;13${end_wrap}"
+  local global_is_clean=0
+  local gs_fg="${wrap}38;5;13${end_wrap}"
+  local gs_bg="${wrap}48;5;140${end_wrap}"
+  local gs_sep_fg="${wrap}38;5;13${end_wrap}"
   if [[ -n ${ZSH_VERSION-} ]]; then
     PROMPT="$(__promptline_left_prompt)"
     RPROMPT="$(__promptline_right_prompt)"
