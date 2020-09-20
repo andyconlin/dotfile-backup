@@ -15,6 +15,9 @@ Platforms included:
 - pip
 - npm
 - motd
+- bitbar plugins (list, plus any I've made; or just move the whole plugin folder over)
+- various applescripts, folder actions, and necessary assets
+- bettertouchtool (maybe...)
 
 Scripts included:
 - backupScript.sh
