@@ -12,6 +12,7 @@ Plugin 'KeitaNakamura/neodark.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'preservim/nerdtree'
 Plugin 'edkolev/promptline.vim'
+Plugin 'ActivityWatch/aw-watcher-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()     " required

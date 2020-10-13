@@ -41,4 +41,5 @@ printf "#"
 
 # bettertouchtool config
 
+# `ls` Applications folder to catch others not installed by brew, mas, etc.
 printf "\nDONE!"
