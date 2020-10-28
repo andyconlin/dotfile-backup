@@ -17,7 +17,7 @@ Platforms included:
 - motd
 - bitbar plugins (list, plus any I've made; or just move the whole plugin folder over)
 - various applescripts, folder actions, and necessary assets
-- bettertouchtool (maybe...)
+- bettertouchtool (maybe a method in the `.sh` file to backup BTT to the repo, but there is sensitive data in there, I believe, so store elsewhere or clean somehow)
 - also `ls` the Applications folder to catch any other applications
 
 Scripts included:
