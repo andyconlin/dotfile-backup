@@ -29,3 +29,4 @@ Workflows ideas:
 - alias for running backupScript.sh
   - maybe make this run on a schedule
 - options to backup locally, also commit, and push to github
+- make use of brewfile/bundle/whatever it is :)
