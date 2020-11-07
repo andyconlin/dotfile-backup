@@ -60,6 +60,7 @@ set cursorline	      	" Highlight current line
 set vb                  " Use visual bell instead of beeping
 " set laststatus=2        " https://github.com/powerline/powerline/issues/1595#issuecomment-629666153
 set autoread            " Automatically read a file that has been changed
+set backupcopy=yes      " https://vi.stackexchange.com/a/19901
 
 " turn relative line numbers on
 set relativenumber

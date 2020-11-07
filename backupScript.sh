@@ -19,7 +19,7 @@ printf "#"
 cp ~/.vimrc dotfiles/.vimrc
 printf "#"
 
-mkdir dotfiles/.vim
+mkdir -p dotfiles/.vim
 cp ~/.vim/packages.vim dotfiles/.vim/packages.vim
 printf "#"
 
